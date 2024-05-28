@@ -8,14 +8,27 @@ dbutils.library.restartPython()
 
 # COMMAND ----------
 
-#Delta Source Details
-source_catalog = "shared"
-source_schema = "va_gen_ai_demo"
-source_table = "web_scraper_data"
+# #Delta Source Details
+# source_catalog = "shared"
+# source_schema = "va_gen_ai_demo"
+# source_table = "web_scraper_data"
 
-#Vector Search Details
-vs_endpoint = "dbdemos_vs_endpoint"
-embedding_endpoint_name = "databricks-bge-large-en"
+# #Vector Search Details
+# vs_endpoint = "dbdemos_vs_endpoint"
+# embedding_endpoint_name = "databricks-bge-large-en"
+
+# COMMAND ----------
+
+base_url = spark.conf.get("spark.base_url")
+sitemap_url = spark.conf.get("spark.sitemap_url")
+source_catalog = spark.conf.get("spark.catalog")
+source_schema = spark.conf.get("spark.schema")
+source_table = spark.conf.get("spark.table")
+vs_endpoint = spark.conf.get("spark.vs_endpoint")
+embedding_endpoint_name = spark.conf.get("spark.embedding_endpoint_name")
+vs_index = spark.conf.get("spark.vs_index")
+vs_index_fullname = spark.conf.get("spark.vs_index_fullname")
+
 
 # COMMAND ----------
 
@@ -27,8 +40,8 @@ vsc.get_endpoint(
   name=vs_endpoint
 )
 
-vs_index = f"{source_table}_bge_index"
-vs_index_fullname = f"{source_catalog}.{source_schema}.{vs_index}"
+# vs_index = f"{source_table}_bge_index"
+# vs_index_fullname = f"{source_catalog}.{source_schema}.{vs_index}"
 
 # COMMAND ----------
 

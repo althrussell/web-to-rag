@@ -3,22 +3,44 @@
 
 # COMMAND ----------
 
-#Delta Source Details
-db_catalog = 'shared'
-db_schema = 'va_gen_ai_demo'
-db_table = "web_scraper_data"
+# MAGIC %run ./00_customer_init
 
-#Vector Search Details
-endpoint_name = "dbdemos_vs_endpoint"
-vs_index = f"{db_table}_bge_index"
-#embedding_model = "databricks-bge-large-en"
-vs_index_fullname = f"{db_catalog}.{db_schema}.{vs_index}"
+# COMMAND ----------
+
+
+rag_context = RagContext(user_questions, contexts, system_roles, system_instructions)
+
+
+# COMMAND ----------
+
+# #Delta Source Details
+# db_catalog = 'shared'
+# db_schema = 'va_gen_ai_demo'
+# db_table = "web_scraper_data"
+
+# #Vector Search Details
+# endpoint_name = "dbdemos_vs_endpoint"
+# vs_index = f"{db_table}_bge_index"
+# #embedding_model = "databricks-bge-large-en"
+# vs_index_fullname = f"{db_catalog}.{db_schema}.{vs_index}"
+
+# COMMAND ----------
+
+# base_url = spark.conf.get("spark.base_url")
+# sitemap_url = spark.conf.get("spark.sitemap_url")
+db_catalog = spark.conf.get("spark.catalog")
+db_schema = spark.conf.get("spark.schema")
+db_table = spark.conf.get("spark.table")
+vs_endpoint = spark.conf.get("spark.vs_endpoint")
+embedding_endpoint_name = spark.conf.get("spark.embedding_endpoint_name")
+vs_index = spark.conf.get("spark.vs_index")
+vs_index_fullname = spark.conf.get("spark.vs_index_fullname")
 
 # COMMAND ----------
 
 ## SET WHICH MODEL TO USE
 # llama, mixtral, dbrx
-model = dbrx
+model = llama
 
 chat = ChatDatabricks(
     target_uri=model.target_uri,
@@ -34,7 +56,7 @@ chat = ChatDatabricks(
 # COMMAND ----------
 
 vsc = VectorSearchClient(disable_notice=True)
-index = vsc.get_index(endpoint_name=endpoint_name,
+index = vsc.get_index(endpoint_name=vs_endpoint,
                       index_name=vs_index_fullname)
 
 retriever = DatabricksVectorSearch(
@@ -63,8 +85,7 @@ prompt_template = ChatPromptTemplate.from_messages([
          </context> 
          
          <instructions>
-         - Focus your answers based on the context but provide additional helpful notes from your background knowledge caveat those notes though.
-         - If the context does not seem relevant to the answer say as such.
+         {system_instruction}
          </instructions>
          """),
         MessagesPlaceholder(variable_name="chat_history"),
@@ -77,13 +98,29 @@ retrieval_chain = create_retrieval_chain(retriever_chain, stuff_documents_chain)
 
 # COMMAND ----------
 
+print("Questions")
+print(rag_context.user_questions)
 
-user_question = "Can i bring my 80kg dog onboard?"
-context = ""
-system_role = "You are a experienced travel agent that takes a conversation between a traveller and yourself and answer their questions based on the below context"
+print("System Instructions")
+print(rag_context.system_instructions)
+print("System Role")
+print(rag_context.system_roles)
+print("Context")
+print(rag_context.contexts)
 
-response = retrieval_chain.invoke({"chat_history": [], 
-                              "input": user_question, 
-                              "context": context,
-                              "system_role":system_role})
-display_chat('',response)
+
+
+# COMMAND ----------
+
+# call_llm_with_context
+# 1 : Question
+# 2 : Context
+# 3 : System Role
+# 4 : System Instruction
+# See 00_customer_init for configured Values
+response1 = call_llm_with_context(retrieval_chain,rag_context, 0, 0, 0, 0)
+display_chat('',response1)
+
+# COMMAND ----------
+
+

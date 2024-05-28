@@ -82,3 +82,34 @@ def display_chat(chat_history, response):
     displayHTML(chat_history_html + user_message_html(input_message) + assistant_message_html(response_html))
 
 
+
+# COMMAND ----------
+
+class RagContext:
+    def __init__(self, user_questions, contexts, system_roles, system_instructions):
+        self.user_questions = user_questions
+        self.contexts = contexts
+        self.system_roles = system_roles
+        self.system_instructions = system_instructions
+
+    def get_context(self, user_question_index, context_index, system_role_index, system_instruction_index):
+        return {
+            "user_question": self.user_questions[user_question_index],
+            "context": self.contexts[context_index],
+            "system_role": self.system_roles[system_role_index],
+            "system_instruction": self.system_instructions[system_instruction_index]
+        }
+
+
+# COMMAND ----------
+
+def call_llm_with_context(retrieval_chain,rag_context, user_question_index, context_index, system_role_index, system_instruction_index):
+    context_data = rag_context.get_context(user_question_index, context_index, system_role_index, system_instruction_index)
+    response = retrieval_chain.invoke({
+        "chat_history": [],
+        "input": context_data["user_question"],
+        "context": context_data["context"],
+        "system_role": context_data["system_role"],
+        "system_instruction": context_data["system_instruction"]
+    })
+    return response

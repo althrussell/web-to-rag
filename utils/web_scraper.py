@@ -15,9 +15,10 @@ from urllib.parse import urljoin, urlparse
 from datetime import datetime
 from pyspark.sql.types import StructType, StructField, StringType, TimestampType
 import re
-import xml.etree.ElementTree as ET
 import uuid
 from pyspark.sql import SparkSession
+from lxml import etree
+import time
 
 class WebScraper:
     def __init__(self, base_url, sitemap_url=None, chunk_size=1024, overlap=256):
@@ -26,6 +27,10 @@ class WebScraper:
         self.visited = set()
         self.chunk_size = chunk_size
         self.overlap = overlap
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+        }
+        self.session = requests.Session()  # Use a session to manage cookies
 
     def is_valid(self, url):
         """Check if the URL belongs to the base domain."""
@@ -36,18 +41,21 @@ class WebScraper:
         """Get all valid links from the given URL."""
         urls = set()
         try:
-            response = requests.get(url)
-            soup = BeautifulSoup(response.content, "html.parser")
-            for a_tag in soup.findAll("a"):
-                href = a_tag.attrs.get("href")
-                if href == "" or href is None:
-                    continue
-                href = urljoin(url, href)
-                parsed_href = urlparse(href)
-                href = parsed_href.scheme + "://" + parsed_href.netloc + parsed_href.path
-                if self.is_valid(href) and href not in self.visited:
-                    urls.add(href)
-                    self.visited.add(href)
+            response = self.session.get(url, headers=self.headers)
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.content, "html.parser")
+                for a_tag in soup.findAll("a"):
+                    href = a_tag.attrs.get("href")
+                    if href == "" or href is None:
+                        continue
+                    href = urljoin(url, href)
+                    parsed_href = urlparse(href)
+                    href = parsed_href.scheme + "://" + parsed_href.netloc + parsed_href.path
+                    if self.is_valid(href) and href not in self.visited:
+                        urls.add(href)
+                        self.visited.add(href)
+            else:
+                print(f"Failed to fetch URL: {url} with status code {response.status_code}")
         except requests.exceptions.RequestException as e:
             print(f"Error while requesting URL {url}: {e}")
         return urls
@@ -55,17 +63,28 @@ class WebScraper:
     def get_sitemap_links(self):
         """Get all links from the sitemap URL."""
         urls = set()
-        try:
-            response = requests.get(self.sitemap_url)
-            root = ET.fromstring(response.content)
-            for url in root.findall("{http://www.sitemaps.org/schemas/sitemap/0.9}url"):
-                loc = url.find("{http://www.sitemaps.org/schemas/sitemap/0.9}loc").text
-                if self.is_valid(loc):
-                    urls.add(loc)
-        except requests.exceptions.RequestException as e:
-            print(f"Error while requesting sitemap URL {self.sitemap_url}: {e}")
-        except ET.ParseError as e:
-            print(f"Error parsing sitemap XML from {self.sitemap_url}: {e}")
+        retries = 3
+        for attempt in range(retries):
+            try:
+                response = self.session.get(self.sitemap_url, headers=self.headers)
+                if response.status_code == 200:
+                    content = response.content
+                    print(f"Sitemap content: {content[:500]}...")  # Log first 500 characters of the content
+                    root = etree.fromstring(content)
+                    for url in root.findall("{http://www.sitemaps.org/schemas/sitemap/0.9}url"):
+                        loc = url.find("{http://www.sitemaps.org/schemas/sitemap/0.9}loc").text
+                        if self.is_valid(loc):
+                            urls.add(loc)
+                    break
+                else:
+                    print(f"Failed to fetch sitemap: {response.status_code}")
+            except requests.exceptions.RequestException as e:
+                print(f"Error while requesting sitemap URL {self.sitemap_url}: {e}")
+            except etree.XMLSyntaxError as e:
+                print(f"Error parsing sitemap XML from {self.sitemap_url}: {e}")
+            if attempt < retries - 1:
+                print("Retrying...")
+                time.sleep(5)
         return urls
 
     def chunk_text(self, text):
@@ -89,16 +108,19 @@ class WebScraper:
     def scrape_page(self, url):
         """Scrape the page content and chunk the text."""
         try:
-            response = requests.get(url)
-            soup = BeautifulSoup(response.content, "html.parser")
-            page_text = soup.get_text(separator="\n", strip=True)
-            page_text = re.sub(r'\s+', ' ', page_text)  # Remove extra whitespace
-            scrape_time = datetime.now()
-            text_chunks = self.chunk_text(page_text)
-            return [{"row_id": str(uuid.uuid4()), "url": url, "content": chunk, "scrape_time": scrape_time} for chunk in text_chunks]
+            response = self.session.get(url, headers=self.headers)
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.content, "html.parser")
+                page_text = soup.get_text(separator="\n", strip=True)
+                page_text = re.sub(r'\s+', ' ', page_text)  # Remove extra whitespace
+                scrape_time = datetime.now()
+                text_chunks = self.chunk_text(page_text)
+                return [{"row_id": str(uuid.uuid4()), "url": url, "content": chunk, "scrape_time": scrape_time} for chunk in text_chunks]
+            else:
+                print(f"Failed to fetch URL: {url} with status code {response.status_code}")
         except requests.exceptions.RequestException as e:
             print(f"Error while scraping URL {url}: {e}")
-            return []
+        return []
 
 def catalog_exists(catalog_name):
     """Check if the catalog exists."""
@@ -227,4 +249,5 @@ def parallel_scrape(base_url, catalog, schema, table, sitemap_url=None, max_dept
         page_data = scraper.scrape_page(url)
         if page_data:
             write_to_delta(page_data, catalog, schema, table)
+        time.sleep(2)  # Add a delay between requests to avoid rate limiting
 
