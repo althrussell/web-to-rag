@@ -18,7 +18,7 @@ vs_index_fullname = f"{db_catalog}.{db_schema}.{vs_index}"
 
 ## SET WHICH MODEL TO USE
 # llama, mixtral, dbrx
-model = llama
+model = dbrx
 
 chat = ChatDatabricks(
     target_uri=model.target_uri,
@@ -52,10 +52,6 @@ retriever_chain = create_history_aware_retriever(chat, retriever, retriever_prom
 
 # COMMAND ----------
 
-system_role = "You are a experienced travel agent that takes a conversation between a traveller and yourself and answer their questions based on the below context"
-
-# COMMAND ----------
-
 
 
 prompt_template = ChatPromptTemplate.from_messages([
@@ -81,10 +77,13 @@ retrieval_chain = create_retrieval_chain(retriever_chain, stuff_documents_chain)
 
 # COMMAND ----------
 
+
 user_question = "Can i bring my 80kg dog onboard?"
+context = ""
+system_role = "You are a experienced travel agent that takes a conversation between a traveller and yourself and answer their questions based on the below context"
 
 response = retrieval_chain.invoke({"chat_history": [], 
                               "input": user_question, 
-                              "context": "",
+                              "context": context,
                               "system_role":system_role})
 display_chat('',response)
