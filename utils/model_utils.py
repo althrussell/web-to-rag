@@ -87,7 +87,7 @@ def display_chat(chat_history, response):
 
 class RagContext:
     def __init__(self, user_questions, contexts, system_roles, system_instructions):
-        self.user_questions = user_questions
+        self.user_questions = user_questionsM
         self.contexts = contexts
         self.system_roles = system_roles
         self.system_instructions = system_instructions

@@ -5,7 +5,7 @@
 
 # Make sure Parameters are correctly defined in 00_customer_init
 base_url = spark.conf.get("spark.base_url")
-sitemap_url = spark.conf.get("spark.sitemap_url")
+sitemap_url = spark.conf.get("spark.sitemap_url") or None
 catalog = spark.conf.get("spark.catalog")
 schema = spark.conf.get("spark.schema")
 table = spark.conf.get("spark.table")

@@ -43,7 +43,7 @@ system_instructions = [
           "Provide a concise answer."
 
 ]
-# Create an instance of RagContext
+
 
 # COMMAND ----------
 
