@@ -1,33 +1,24 @@
 # Databricks notebook source
-# MAGIC %pip install --upgrade --force-reinstall databricks-vectorsearch 
-# MAGIC
+# MAGIC %run ./utils/model_utils
 
 # COMMAND ----------
 
-dbutils.library.restartPython()
+# MAGIC %run ./00_customer_init
 
 # COMMAND ----------
 
-# #Delta Source Details
-# source_catalog = "shared"
-# source_schema = "va_gen_ai_demo"
-# source_table = "web_scraper_data"
 
-# #Vector Search Details
-# vs_endpoint = "dbdemos_vs_endpoint"
-# embedding_endpoint_name = "databricks-bge-large-en"
-
-# COMMAND ----------
-
-base_url = spark.conf.get("spark.base_url")
-sitemap_url = spark.conf.get("spark.sitemap_url")
-source_catalog = spark.conf.get("spark.catalog")
-source_schema = spark.conf.get("spark.schema")
-source_table = spark.conf.get("spark.table")
+db_catalog = spark.conf.get("spark.db_catalog")
+db_schema = spark.conf.get("spark.db_schema")
+db_table = spark.conf.get("spark.db_table")
 vs_endpoint = spark.conf.get("spark.vs_endpoint")
 embedding_endpoint_name = spark.conf.get("spark.embedding_endpoint_name")
 vs_index = spark.conf.get("spark.vs_index")
 vs_index_fullname = spark.conf.get("spark.vs_index_fullname")
+
+# COMMAND ----------
+
+
 
 
 # COMMAND ----------
@@ -47,7 +38,7 @@ vsc.get_endpoint(
 
 index = vsc.create_delta_sync_index(
   endpoint_name=vs_endpoint,
-  source_table_name=f'{source_catalog}.{source_schema}.{source_table}',
+  source_table_name=f'{db_catalog}.{db_schema}.{db_table}',
   index_name=vs_index_fullname,
   pipeline_type='TRIGGERED',
   primary_key="row_id",

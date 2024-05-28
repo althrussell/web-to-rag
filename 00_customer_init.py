@@ -3,12 +3,12 @@
 
 # Step 1: Define parameters
 base_url = ""  # Replace with the URL you want to scrape
-sitemap_url = "" # Replace with the sitemap URL if available, otherwise use None
+sitemap_url = "https://www.virginaustralia.com/sitemap-AU.xml" # Replace with the sitemap URL if available, otherwise use None
 
 #Unity Catalog Details
-catalog = "shared"  # Replace with your catalog name
-schema = "va_gen_ai_demo"  # Replace with your schema name
-table = "web_scraper_data"  # Replace with your desired table name
+db_catalog = "shared"  # Replace with your catalog name
+db_schema = "temp_va_gen_ai_demo"  # Replace with your schema name
+db_table = "temp_web_scraper_data"  # Replace with your desired table name
 
 #Vector Search Details
 vs_endpoint = "dbdemos_vs_endpoint"
@@ -51,9 +51,9 @@ system_instructions = [
 spark.conf.set("spark.base_url", base_url)
 spark.conf.set("spark.sitemap_url", sitemap_url)
 
-spark.conf.set("spark.catalog", catalog)
-spark.conf.set("spark.schema", schema)
-spark.conf.set("spark.table", table)
+spark.conf.set("spark.db_catalog", db_catalog)
+spark.conf.set("spark.db_schema", db_schema)
+spark.conf.set("spark.db_table", db_table)
 
 spark.conf.set("spark.vs_endpoint", vs_endpoint)
 spark.conf.set("spark.embedding_endpoint_name", embedding_endpoint_name)

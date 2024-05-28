@@ -13,19 +13,6 @@ rag_context = RagContext(user_questions, contexts, system_roles, system_instruct
 
 # COMMAND ----------
 
-# #Delta Source Details
-# db_catalog = 'shared'
-# db_schema = 'va_gen_ai_demo'
-# db_table = "web_scraper_data"
-
-# #Vector Search Details
-# endpoint_name = "dbdemos_vs_endpoint"
-# vs_index = f"{db_table}_bge_index"
-# #embedding_model = "databricks-bge-large-en"
-# vs_index_fullname = f"{db_catalog}.{db_schema}.{vs_index}"
-
-# COMMAND ----------
-
 # base_url = spark.conf.get("spark.base_url")
 # sitemap_url = spark.conf.get("spark.sitemap_url")
 db_catalog = spark.conf.get("spark.catalog")
@@ -40,7 +27,7 @@ vs_index_fullname = spark.conf.get("spark.vs_index_fullname")
 
 ## SET WHICH MODEL TO USE
 # llama, mixtral, dbrx
-model = llama
+model = dbrx
 
 chat = ChatDatabricks(
     target_uri=model.target_uri,

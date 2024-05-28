@@ -19,9 +19,10 @@ import uuid
 from pyspark.sql import SparkSession
 from lxml import etree
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 class WebScraper:
-    def __init__(self, base_url, sitemap_url=None, chunk_size=1024, overlap=256):
+    def __init__(self, base_url, sitemap_url=None, chunk_size=1024, overlap=256, max_workers=5):
         self.base_url = base_url
         self.sitemap_url = sitemap_url
         self.visited = set()
@@ -31,6 +32,7 @@ class WebScraper:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
         }
         self.session = requests.Session()  # Use a session to manage cookies
+        self.max_workers = max_workers
 
     def is_valid(self, url):
         """Check if the URL belongs to the base domain."""
@@ -209,9 +211,9 @@ def write_to_delta(text_data_list, catalog, schema, table):
     except Exception as e:
         print(f"Error while writing to Delta table {full_table_name}: {e}")
 
-def parallel_scrape(base_url, catalog, schema, table, sitemap_url=None, max_depth=2, chunk_size=1024, overlap=256, scrape_limit=None, clear_table_flag=False):
+def parallel_scrape(base_url, catalog, schema, table, sitemap_url=None, max_depth=2, chunk_size=1024, overlap=256, scrape_limit=None, clear_table_flag=False, max_workers=5):
     """Perform parallel scraping using Spark."""
-    scraper = WebScraper(base_url, sitemap_url, chunk_size, overlap)
+    scraper = WebScraper(base_url, sitemap_url, chunk_size, overlap, max_workers)
 
     create_catalog_and_schema_if_not_exists(catalog, schema)
 
@@ -234,8 +236,10 @@ def parallel_scrape(base_url, catalog, schema, table, sitemap_url=None, max_dept
     if not sitemap_url:  # Only expand links if not using sitemap
         for _ in range(max_depth):
             new_links = set()
-            for url in current_links:
-                new_links.update(scraper.get_all_website_links(url))
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                futures = {executor.submit(scraper.get_all_website_links, url): url for url in current_links}
+                for future in as_completed(futures):
+                    new_links.update(future.result())
             new_links -= all_links
             all_links.update(new_links)
             current_links = new_links
@@ -245,9 +249,10 @@ def parallel_scrape(base_url, catalog, schema, table, sitemap_url=None, max_dept
         all_links = list(all_links)[:scrape_limit]
 
     # Collect data and write to Delta for each page
-    for url in all_links:
-        page_data = scraper.scrape_page(url)
-        if page_data:
-            write_to_delta(page_data, catalog, schema, table)
-        time.sleep(2)  # Add a delay between requests to avoid rate limiting
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(scraper.scrape_page, url): url for url in all_links}
+        for future in as_completed(futures):
+            page_data = future.result()
+            if page_data:
+                write_to_delta(page_data, catalog, schema, table)
 
