@@ -34,6 +34,9 @@ llama = Model("llama", "databricks-meta-llama-3-70b-instruct","databricks",0.1)
 mixtral = Model("mixtral", "databricks-mixtral-8x7b-instruct","databricks",0.1)
 dbrx = Model("dbrx", "databricks-dbrx-instruct","databricks",0.1)
 
+#custom
+mix8_pt = Model("mix_pt","va_genai_demo","databricks",0.1)
+mix7_pt = Model("mix7_pt","va_mixtral_demo","databricks",0.1)
 
 
 # COMMAND ----------
@@ -59,13 +62,13 @@ class Questions:
 def display_chat(chat_history, response):
     def user_message_html(message):
         return f"""
-            <div style="width: 90%; border-radius: 10px; background-color: #c2efff; padding: 10px; box-shadow: 2px 2px 2px #F7f7f7; margin-bottom: 10px; font-size: 14px;">
+            <div style="width: 90%; border-radius: 10px; background-color: #e10a0a; padding: 10px; box-shadow: 2px 2px 2px #F7f7f7; margin-bottom: 10px; font-size: 14px; color: white;">
                 {message}
             </div>"""
     
     def assistant_message_html(message):
         return f"""
-            <div style="width: 90%; border-radius: 10px; background-color: #e3f6fc; padding: 10px; box-shadow: 2px 2px 2px #F7f7f7; margin-bottom: 10px; margin-left: 40px; font-size: 14px">
+            <div style="width: 90%; border-radius: 10px; background-color: #efefef; padding: 10px; box-shadow: 2px 2px 2px #F7f7f7; margin-bottom: 10px; margin-left: 40px; font-size: 14px">
                 <img style="float: left; width:40px; margin: -10px 5px 0px -10px" src="https://github.com/databricks-demos/dbdemos-resources/blob/main/images/product/chatbot-rag/robot.png?raw=true"/>
                 {message}
             </div>"""
@@ -87,7 +90,7 @@ def display_chat(chat_history, response):
 
 class RagContext:
     def __init__(self, user_questions, contexts, system_roles, system_instructions):
-        self.user_questions = user_questionsM
+        self.user_questions = user_questions
         self.contexts = contexts
         self.system_roles = system_roles
         self.system_instructions = system_instructions

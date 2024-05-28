@@ -18,8 +18,7 @@ vs_index_fullname = spark.conf.get("spark.vs_index_fullname")
 
 # COMMAND ----------
 
-
-
+print(vs_index_fullname)
 
 # COMMAND ----------
 

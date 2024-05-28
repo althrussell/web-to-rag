@@ -15,9 +15,9 @@ rag_context = RagContext(user_questions, contexts, system_roles, system_instruct
 
 # base_url = spark.conf.get("spark.base_url")
 # sitemap_url = spark.conf.get("spark.sitemap_url")
-db_catalog = spark.conf.get("spark.catalog")
-db_schema = spark.conf.get("spark.schema")
-db_table = spark.conf.get("spark.table")
+db_catalog = spark.conf.get("spark.db_catalog")
+db_schema = spark.conf.get("spark.db_schema")
+db_table = spark.conf.get("spark.db_table")
 vs_endpoint = spark.conf.get("spark.vs_endpoint")
 embedding_endpoint_name = spark.conf.get("spark.embedding_endpoint_name")
 vs_index = spark.conf.get("spark.vs_index")
@@ -26,8 +26,8 @@ vs_index_fullname = spark.conf.get("spark.vs_index_fullname")
 # COMMAND ----------
 
 ## SET WHICH MODEL TO USE
-# llama, mixtral, dbrx
-model = dbrx
+# llama, mixtral, dbrx, # temp: mix8_pt, mix7_pt
+model = llama
 
 chat = ChatDatabricks(
     target_uri=model.target_uri,
@@ -106,7 +106,43 @@ print(rag_context.contexts)
 # 4 : System Instruction
 # See 00_customer_init for configured Values
 response1 = call_llm_with_context(retrieval_chain,rag_context, 0, 0, 0, 0)
+#response1 = call_llm_with_context(retrieval_chain,rag_context, 5, 0, 2, 0)
 display_chat('',response1)
+
+# COMMAND ----------
+
+response2 = call_llm_with_context(retrieval_chain,rag_context, 1, 0, 0, 0)
+display_chat('',response2)
+
+# COMMAND ----------
+
+response3 = call_llm_with_context(retrieval_chain,rag_context, 2, 0, 0, 0)
+display_chat('',response3)
+
+# COMMAND ----------
+
+response4 = call_llm_with_context(retrieval_chain,rag_context, 3, 0, 0, 0)
+display_chat('',response4)
+
+# COMMAND ----------
+
+response5 = call_llm_with_context(retrieval_chain,rag_context, 4, 0, 0, 0)
+display_chat('',response5)
+
+# COMMAND ----------
+
+response6 = call_llm_with_context(retrieval_chain,rag_context, 5, 0, 0, 0)
+display_chat('',response6)
+
+# COMMAND ----------
+
+response7 = call_llm_with_context(retrieval_chain,rag_context, 6, 0, 0, 0)
+display_chat('',response7)
+
+# COMMAND ----------
+
+for i in range(20):
+  display_chat('',call_llm_with_context(retrieval_chain,rag_context, i, 0, 0, 1))
 
 # COMMAND ----------
 

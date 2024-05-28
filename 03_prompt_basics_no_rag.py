@@ -7,7 +7,7 @@
 
 ## SET WHICH MODEL TO USE
 # llama, mixtral, dbrx
-model = llama
+model = dbrx
 
 # COMMAND ----------
 
