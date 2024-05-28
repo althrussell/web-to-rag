@@ -1,0 +1,27 @@
+{
+    "general_knowledge": [
+        "Can you explain the theory of relativity in simple terms?",
+        "What is the capital of France?",
+        "Who wrote 'A Brief History of Time?'"
+    ],
+    "programming": [
+        "How do I implement a binary search algorithm in Python?",
+        "What is the difference between Python 2 and Python 3?",
+        "Can you explain the concept of object-oriented programming?"
+    ],
+    "history": [
+        "What were the main causes of World War II?",
+        "Who was the first president of the United States?",
+        "Can you describe the Industrial Revolution?"
+    ],
+    "science_and_technology": [
+        "What are the potential benefits and risks of artificial intelligence?",
+        "How does the internet work?",
+        "What are the differences between renewable and non-renewable energy sources?"
+    ],
+    "literature": [
+        "Can you provide a brief summary and analysis of 'To Kill a Mockingbird' by Harper Lee?",
+        "Who wrote '1984' and what is the book about?",
+        "What are the main themes in 'Pride and Prejudice' by Jane Austen?"
+    ]
+}
