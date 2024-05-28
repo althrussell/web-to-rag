@@ -1,23 +1,12 @@
 # Databricks notebook source
-# MAGIC %pip install -U mlflow==2.13.0 llama_index langchain langchain-community
-
-# COMMAND ----------
-
-dbutils.library.restartPython()
-
-# COMMAND ----------
-
 # MAGIC %run ./utils/model_utils
 
 # COMMAND ----------
 
-llama = Model("llama", "databricks-meta-llama-3-70b-instruct","databricks",0.1)
-mixtral = Model("mixtral", "databricks-mixtral-8x7b-instruct","databricks",0.1)
-dbrx = Model("dbrx", "databricks-dbrx-instruct","databricks",0.1)
-
 
 
 ## SET WHICH MODEL TO USE
+# llama, mixtral, dbrx
 model = llama
 
 # COMMAND ----------
@@ -83,4 +72,59 @@ str_output = print(output.content)
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC # Few Shot Prompting
+# MAGIC One way to help the a model do logic better is to provide it with samples
+# MAGIC
+# MAGIC
 
+# COMMAND ----------
+
+prompt = """
+<s>[INST]<<SYS>>
+Be helpful and suggest a type of account for a customer.
+<</SYS>>    
+
+Here are some examples:
+A consumer wants a savings account
+A business wants a business account
+A tech unicorn deserves a special VC account
+
+Question:
+What account would you recommend a small business?[/INST]
+"""
+
+output = pipe.invoke([HumanMessage(content=prompt)], max_tokens=100)
+str_output = print(output.content)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC # System Prompts
+# MAGIC Systems prompts can be used to instruct a model and also to tune it's reponse
+# MAGIC You have already seen them. It is the bit inside the <<SYS>> tags.
+# MAGIC They can have a big effect!
+# MAGIC
+
+# COMMAND ----------
+
+system_prompt = 'Be helpful and suggest a type of account for a customer. try to be curteous and explain some of the key things to consider in bank account selection.'
+
+user_question = 'I am a young student what account should I get?'
+
+prompt = f"""
+<s>[INST]<<SYS>>
+{system_prompt}
+<</SYS>>    
+
+Here are some examples:
+A consumer wants a savings account
+A business wants a business account
+A tech unicorn deserves a special VC account
+
+Question:
+{user_question}[/INST]
+"""
+
+output = pipe.invoke([HumanMessage(content=prompt)], max_tokens=100)
+str_output = print(output.content)
