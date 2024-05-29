@@ -51,7 +51,7 @@ def eval_pipe(inputs):
 # COMMAND ----------
 
 
-with mlflow.start_run(run_name='rio_gen_ai_basic_rag'):
+with mlflow.start_run(run_name='rio_llama'):
   results = mlflow.evaluate(eval_pipe, 
                           data=sample_questions[0:20], 
                           model_type='text')

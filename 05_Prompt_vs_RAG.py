@@ -13,7 +13,7 @@ model = llama
 
 # COMMAND ----------
 
-prompt = "What is the biggest current project at Rio Tinto?"
+prompt = "What is Rio Tinto's revenue and profit trend over the past five years?"
 
 # COMMAND ----------
 

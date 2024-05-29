@@ -1,5 +1,5 @@
 # Databricks notebook source
-# MAGIC %pip install -U mlflow==2.13.0 langchain langchain-community databricks-vectorsearch #llama_index git+https://github.com/openai/whisper.git
+# MAGIC %pip install -U mlflow==2.13.0 langchain langchain-community databricks-vectorsearch git+https://github.com/openai/whisper.git
 
 # COMMAND ----------
 
