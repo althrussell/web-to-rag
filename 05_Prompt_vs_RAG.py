@@ -5,7 +5,7 @@
 
 ## SET WHICH MODEL TO USE
 # llama, mixtral, dbrx
-model = mixtral
+model = llama
 
 # COMMAND ----------
 
@@ -13,7 +13,7 @@ model = mixtral
 
 # COMMAND ----------
 
-prompt = "What safety training programs does Rio Tinto implement?"
+prompt = "What is the biggest current project at Rio Tinto?"
 
 # COMMAND ----------
 
@@ -25,4 +25,8 @@ display_basic_chat(prompt,output.content)
 # COMMAND ----------
 
 # DBTITLE 1,RAG
-display_chat('',call_llm_with_text(retrieval_chain,rag_context, user_question=prompt, context_index=0, system_role_index=2, system_instruction_index=2))
+display_chat('',call_llm_with_text(retrieval_chain,rag_context, user_question=prompt, context_index=0, system_role_index=3, system_instruction_index=2))
+
+# COMMAND ----------
+
+

@@ -13,6 +13,14 @@ model = llama
 
 # COMMAND ----------
 
+# DBTITLE 1,Test Retreival Chain
+print("Query 1: What measures does Rio Tinto take to protect biodiversity?")
+result = retrieve_document_chain.invoke(
+    {"messages": [{"role": "user", "content": "What measures does Rio Tinto take to protect biodiversity?"}]})
+print(result)
+
+# COMMAND ----------
+
 
 display_chat('',call_llm_with_context(retrieval_chain,rag_context, user_question_index=0, context_index=0, system_role_index=0, system_instruction_index=2))
 

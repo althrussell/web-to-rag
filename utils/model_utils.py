@@ -14,6 +14,9 @@ dbutils.library.restartPython()
 bannerColor = '#cd2c2cff'
 chatboxColor = '#efefefff'
 
+#https://github.com/databricks-demos/dbdemos-resources/blob/main/images/product/chatbot-rag/robot.png?raw=true
+imgurl = 'https://cdn-rio.dataweavers.io/-/media/project/riotinto/shared/riologo.svg?rev=b093ade28919415dba6f33fd12250a32'
+
 # COMMAND ----------
 
 from langchain_community.chat_models import ChatDatabricks
@@ -68,6 +71,8 @@ class Questions:
 
 # COMMAND ----------
 
+
+
 def display_chat(chat_history, response):
     def user_message_html(message):
         return f"""
@@ -78,7 +83,7 @@ def display_chat(chat_history, response):
     def assistant_message_html(message):
         return f"""
             <div style="width: 90%; border-radius: 10px; background-color: {chatboxColor}; padding: 10px; box-shadow: 2px 2px 2px #F7f7f7; margin-bottom: 10px; margin-left: 40px; font-size: 14px">
-                <img style="float: left; width:40px; margin: -10px 5px 0px -10px" src="https://github.com/databricks-demos/dbdemos-resources/blob/main/images/product/chatbot-rag/robot.png?raw=true"/>
+                <img style="float: left; width:80px; margin: 5px 5px 5px 5px" src="{imgurl}"/>
                 {message}
             </div>"""
     
@@ -107,7 +112,7 @@ def display_basic_chat(input, response):
     def assistant_message_html(message):
         return f"""
             <div style="width: 90%; border-radius: 10px; background-color: {chatboxColor}; padding: 10px; box-shadow: 2px 2px 2px #F7f7f7; margin-bottom: 10px; margin-left: 40px; font-size: 14px">
-                <img style="float: left; width:40px; margin: -10px 5px 0px -10px" src="https://github.com/databricks-demos/dbdemos-resources/blob/main/images/product/chatbot-rag/robot.png?raw=true"/>
+                <img style="float: left; width:80px; margin: 5px 5px 5px 5px" src="{imgurl}"/>
                 {message}
             </div>"""
     
@@ -164,3 +169,7 @@ def call_llm_with_text(retrieval_chain,rag_context, user_question, context_index
         "system_instruction": context_data["system_instruction"]
     })
     return response
+
+# COMMAND ----------
+
+

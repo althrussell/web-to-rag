@@ -41,6 +41,21 @@ retriever_chain = create_history_aware_retriever(chat, retriever, retriever_prom
 
 # COMMAND ----------
 
+from operator import itemgetter
+from langchain.schema.runnable import RunnableBranch, RunnableLambda, RunnableParallel, RunnablePassthrough
+def extract_question(input):
+    return input[-1]["content"]
+  
+retrieve_document_chain = (
+    itemgetter("messages")
+    | RunnableLambda(extract_question)
+    | retriever
+)
+
+
+
+# COMMAND ----------
+
 
 
 prompt_template = ChatPromptTemplate.from_messages([

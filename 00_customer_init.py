@@ -69,7 +69,8 @@ contexts = [
 system_roles = [
     "You are an experienced travel agent that takes a conversation between a traveller and yourself and answer their questions based on the below context.",
     "You are a knowledgeable customer service representative with expertise in airline policies.",
-    "You are a knowledgeable and helpful assistant specializing in providing detailed information about companies' safety statistics, ESG policies, and sustainability actions. Answer the following questions about Rio Tinto with precise and accurate information, ensuring clarity and comprehensiveness in your responses."
+    "You are a knowledgeable and helpful assistant specializing in providing detailed information about companies' safety statistics, ESG policies, and sustainability actions. Answer the following questions about Rio Tinto with precise and accurate information, ensuring clarity and comprehensiveness in your responses.",
+    "You are a knowledgeable and helpful assistant"
 ]
 
 system_instructions = [
