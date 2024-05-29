@@ -3,11 +3,11 @@
 
 # Step 1: Define parameters
 base_url = ""  # Replace with the URL you want to scrape
-sitemap_url = "https://www.virginaustralia.com/sitemap-AU.xml" # Replace with the sitemap URL if available, otherwise use None
+sitemap_url = "" # Replace with the sitemap URL if available, otherwise use None
 
 #Unity Catalog Details
 db_catalog = "shared"  # Replace with your catalog name
-db_schema = "va_gen_ai_demo"  # Replace with your schema name
+db_schema = "rio_gen_ai_demo"  # Replace with your schema name
 db_table = "web_scraper_data"  # Replace with your desired table name
 
 #Vector Search Details
@@ -21,59 +21,44 @@ vs_index_fullname = f"{db_catalog}.{db_schema}.{vs_index}"
 
 # COMMAND ----------
 
+
+
+# COMMAND ----------
+
 # Define Questions and Roles
 user_questions = [
-    "What is the headquarters location of Virgin Australia?",
-    "How many destinations does Virgin Australia serve?",
-    "What is the fleet size of Virgin Australia?",
-    "Does Virgin Australia offer a loyalty program?",
-    "What is the name of Virgin Australia's loyalty program?",
-    "What are the benefits of joining Virgin Australia's Velocity Frequent Flyer program?",
-    "Can you earn points with Virgin Australia's Velocity Frequent Flyer program on partner airlines?",
-    "What are the classes of service offered by Virgin Australia?",
-    "Does Virgin Australia offer in-flight entertainment?",
-    "What are the amenities provided in Virgin Australia's business class?",
-    "Does Virgin Australia provide Wi-Fi on their flights?",
-    "Can you book special meals on Virgin Australia flights?",
-    "How can you check in for a Virgin Australia flight?",
-    "What is the baggage allowance for Virgin Australia flights?",
-    "Does Virgin Australia have a mobile app?",
-    "What are the features of the Virgin Australia mobile app?",
-    "Does Virgin Australia offer airport lounge access?",
-    "What are the names of Virgin Australia's airport lounges?",
-    "Can you purchase extra legroom seats on Virgin Australia flights?",
-    "Does Virgin Australia have a codeshare agreement with other airlines?",
-    "Which airlines does Virgin Australia have codeshare agreements with?",
-    "What are Virgin Australia's policies for traveling with pets?",
-    "Does Virgin Australia offer group booking options?",
-    "Can you change or cancel a booking with Virgin Australia?",
-    "What are the fees for changing or canceling a booking with Virgin Australia?",
-    "Does Virgin Australia have a frequent flyer program for corporate travelers?",
-    "What is the name of Virgin Australia's corporate frequent flyer program?",
-    "Can you use Velocity Frequent Flyer points to upgrade your seat on Virgin Australia flights?",
-    "Does Virgin Australia have a partnership with any car rental companies?",
-    "How can you earn Velocity Frequent Flyer points with Virgin Australia's partners?",
-    "What are Virgin Australia's policies for unaccompanied minors?",
-    "Does Virgin Australia offer any special assistance for passengers with disabilities?",
-    "What is Virgin Australia's policy on electronic devices during flights?",
-    "Can you book Virgin Australia flights through travel agents?",
-    "Does Virgin Australia have a credit card program?",
-    "What are the benefits of the Virgin Australia credit card?",
-    "Does Virgin Australia offer holiday packages?",
-    "What is included in Virgin Australia's holiday packages?",
-    "How can you contact Virgin Australia's customer service?",
-    "Does Virgin Australia have a lost and found service?",
-    "What are Virgin Australia's policies for delayed or canceled flights?",
-    "Can you get a refund for a canceled Virgin Australia flight?",
-    "Does Virgin Australia offer travel insurance?",
-    "What are the benefits of purchasing travel insurance through Virgin Australia?",
-    "How can you join Virgin Australia's Velocity Frequent Flyer program?",
-    "Does Virgin Australia offer any in-flight magazines or reading materials?",
-    "Can you bring duty-free items on Virgin Australia flights?",
-    "What are the requirements for traveling with infants on Virgin Australia flights?",
-    "Does Virgin Australia offer any promotions or discounts?",
-    "How can you stay updated on Virgin Australia's latest news and offers?"
+    "What are the latest safety statistics for Rio Tinto?",
+    "How does Rio Tinto measure and report safety performance?",
+    "What is Rio Tinto's Total Recordable Injury Frequency Rate (TRIFR)?",
+    "How has Rio Tinto's safety performance changed over the past five years?",
+    "What are the main causes of workplace injuries at Rio Tinto?",
+    "How does Rio Tinto ensure the safety of its employees and contractors?",
+    "What safety training programs does Rio Tinto implement?",
+    "How does Rio Tinto track and respond to safety incidents?",
+    "What safety awards or recognitions has Rio Tinto received?",
+    "How does Rio Tinto involve employees in safety initiatives?",
+    "What are the key components of Rio Tinto's ESG strategy?",
+    "How does Rio Tinto address environmental sustainability in its operations?",
+    "What is Rio Tinto's policy on reducing greenhouse gas emissions?",
+    "How does Rio Tinto manage water usage and conservation?",
+    "What measures does Rio Tinto take to protect biodiversity?",
+    "How does Rio Tinto ensure responsible sourcing of materials?",
+    "What are Rio Tinto's policies regarding human rights and labor practices?",
+    "How does Rio Tinto engage with local communities?",
+    "What governance structures are in place to oversee ESG efforts at Rio Tinto?",
+    "How does Rio Tinto report its ESG performance to stakeholders?",
+    "What sustainability goals has Rio Tinto set for the next decade?",
+    "How does Rio Tinto integrate sustainability into its business strategy?",
+    "What renewable energy projects is Rio Tinto involved in?",
+    "How does Rio Tinto handle waste management and recycling?",
+    "What are some examples of Rio Tinto's sustainable mining practices?",
+    "How does Rio Tinto support sustainable development in the regions where it operates?",
+    "What partnerships does Rio Tinto have with environmental organizations?",
+    "How does Rio Tinto promote sustainability innovation and technology?",
+    "What progress has Rio Tinto made in achieving its sustainability targets?",
+    "How does Rio Tinto's sustainability performance compare to industry benchmarks?"
 ]
+
 
 
 contexts = [
@@ -84,7 +69,7 @@ contexts = [
 system_roles = [
     "You are an experienced travel agent that takes a conversation between a traveller and yourself and answer their questions based on the below context.",
     "You are a knowledgeable customer service representative with expertise in airline policies.",
-    "You are a Rio Tinto expert. You know mining and the resources industry."
+    "You are a knowledgeable and helpful assistant specializing in providing detailed information about companies' safety statistics, ESG policies, and sustainability actions. Answer the following questions about Rio Tinto with precise and accurate information, ensuring clarity and comprehensiveness in your responses."
 ]
 
 system_instructions = [
@@ -92,7 +77,8 @@ system_instructions = [
          - If there is a context provided. Focus your answers based on the context but provide additional helpful notes from your background knowledge caveat those notes though.
          - If there is no context use question and source data to answer.
          - If the context does not seem relevant to the answer say as such.""",
-          "Provide a polite and respectful response."
+          "Provide a polite and respectful response.",
+          ""
 
 ]
 

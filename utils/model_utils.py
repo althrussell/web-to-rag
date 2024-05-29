@@ -1,9 +1,18 @@
 # Databricks notebook source
-# MAGIC %pip install -U mlflow==2.13.0 langchain langchain-community databricks-vectorsearch #llama_index
+# MAGIC %pip install -U mlflow==2.13.0 langchain langchain-community databricks-vectorsearch #llama_index git+https://github.com/openai/whisper.git
+
+# COMMAND ----------
+
+#pip install git+https://github.com/openai/whisper.git
 
 # COMMAND ----------
 
 dbutils.library.restartPython()
+
+# COMMAND ----------
+
+bannerColor = '#cd2c2cff'
+chatboxColor = '#efefefff'
 
 # COMMAND ----------
 
@@ -62,13 +71,13 @@ class Questions:
 def display_chat(chat_history, response):
     def user_message_html(message):
         return f"""
-            <div style="width: 90%; border-radius: 10px; background-color: #e10a0a; padding: 10px; box-shadow: 2px 2px 2px #F7f7f7; margin-bottom: 10px; font-size: 14px; color: white;">
+            <div style="width: 90%; border-radius: 10px; background-color: {bannerColor}; padding: 10px; box-shadow: 2px 2px 2px #F7f7f7; margin-bottom: 10px; font-size: 14px; color: white;">
                 {message}
             </div>"""
     
     def assistant_message_html(message):
         return f"""
-            <div style="width: 90%; border-radius: 10px; background-color: #efefef; padding: 10px; box-shadow: 2px 2px 2px #F7f7f7; margin-bottom: 10px; margin-left: 40px; font-size: 14px">
+            <div style="width: 90%; border-radius: 10px; background-color: {chatboxColor}; padding: 10px; box-shadow: 2px 2px 2px #F7f7f7; margin-bottom: 10px; margin-left: 40px; font-size: 14px">
                 <img style="float: left; width:40px; margin: -10px 5px 0px -10px" src="https://github.com/databricks-demos/dbdemos-resources/blob/main/images/product/chatbot-rag/robot.png?raw=true"/>
                 {message}
             </div>"""
@@ -83,6 +92,32 @@ def display_chat(chat_history, response):
     response_html = f"""{answer}{sources_html}"""
 
     displayHTML(chat_history_html + user_message_html(input_message) + assistant_message_html(response_html))
+
+
+
+# COMMAND ----------
+
+def display_basic_chat(input, response):
+    def user_message_html(message):
+        return f"""
+            <div style="width: 90%; border-radius: 10px; background-color: {bannerColor}; padding: 10px; box-shadow: 2px 2px 2px #F7f7f7; margin-bottom: 10px; font-size: 14px; color: white;">
+                {message}
+            </div>"""
+    
+    def assistant_message_html(message):
+        return f"""
+            <div style="width: 90%; border-radius: 10px; background-color: {chatboxColor}; padding: 10px; box-shadow: 2px 2px 2px #F7f7f7; margin-bottom: 10px; margin-left: 40px; font-size: 14px">
+                <img style="float: left; width:40px; margin: -10px 5px 0px -10px" src="https://github.com/databricks-demos/dbdemos-resources/blob/main/images/product/chatbot-rag/robot.png?raw=true"/>
+                {message}
+            </div>"""
+    
+    
+    input_message = input.replace('\n', '<br/>')
+    answer = response.replace('\n', '<br/>')
+
+    response_html = f"""{answer}"""
+
+    displayHTML(user_message_html(input_message) + assistant_message_html(response_html))
 
 
 
@@ -111,6 +146,19 @@ def call_llm_with_context(retrieval_chain,rag_context, user_question_index, cont
     response = retrieval_chain.invoke({
         "chat_history": [],
         "input": context_data["user_question"],
+        "context": context_data["context"],
+        "system_role": context_data["system_role"],
+        "system_instruction": context_data["system_instruction"]
+    })
+    return response
+
+# COMMAND ----------
+
+def call_llm_with_text(retrieval_chain,rag_context, user_question, context_index, system_role_index, system_instruction_index):
+    context_data = rag_context.get_context(0, context_index, system_role_index, system_instruction_index)
+    response = retrieval_chain.invoke({
+        "chat_history": [],
+        "input": user_question,
         "context": context_data["context"],
         "system_role": context_data["system_role"],
         "system_instruction": context_data["system_instruction"]

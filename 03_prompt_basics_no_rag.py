@@ -7,7 +7,7 @@
 
 ## SET WHICH MODEL TO USE
 # llama, mixtral, dbrx
-model = dbrx
+model = llama
 
 # COMMAND ----------
 
@@ -42,10 +42,10 @@ pipe = ChatDatabricks(
 
 question_catagory = "general_knowledge" #Options are general_knowledge, programming, history, science_and_technology, literature
 question_numer = 0
-prompt = Questions.get_questions("general_knowledge")[question_numer]
+prompt = "Does Virgin Australia offer any special assistance for passengers with disabilities?"#Questions.get_questions("general_knowledge")[question_numer]
 print(f"Question Asked: {prompt}\n")
 
-output = pipe.invoke([HumanMessage(content=prompt)], max_tokens=100)
+output = pipe.invoke([HumanMessage(content=prompt)], max_tokens=500)
 print(f"Response: \n{output.content}")
 
 # COMMAND ----------
