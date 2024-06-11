@@ -5,7 +5,7 @@
 
 ## SET WHICH MODEL TO USE
 # llama, mixtral, dbrx
-model = llama
+model = mixtral
 
 # COMMAND ----------
 
@@ -13,7 +13,7 @@ model = llama
 
 # COMMAND ----------
 
-prompt = "What is Rio Tinto's revenue and profit trend over the past five years?"
+prompt = "As a camping and outdoor expert. Whats the best family tent for 4 people?"
 
 # COMMAND ----------
 

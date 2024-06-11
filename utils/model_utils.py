@@ -1,5 +1,6 @@
 # Databricks notebook source
-# MAGIC %pip install -U mlflow==2.13.0 langchain langchain-community databricks-vectorsearch git+https://github.com/openai/whisper.git
+# MAGIC %pip install -U mlflow==2.13.0 langchain langchain-community databricks-vectorsearch openai-whisper gradio typing-extensions uvicorn fastapi mlflow[databricks]
+# MAGIC
 
 # COMMAND ----------
 
@@ -11,11 +12,11 @@ dbutils.library.restartPython()
 
 # COMMAND ----------
 
-bannerColor = '#cd2c2cff'
+bannerColor = '#103a63ff'
 chatboxColor = '#efefefff'
-
+customer_name = 'BCF'
 #https://github.com/databricks-demos/dbdemos-resources/blob/main/images/product/chatbot-rag/robot.png?raw=true
-imgurl = 'https://cdn-rio.dataweavers.io/-/media/project/riotinto/shared/riologo.svg?rev=b093ade28919415dba6f33fd12250a32'
+imgurl = 'https://www.bcf.com.au/on/demandware.static/-/Library-Sites-bcf-shared-library/default/dw68c7ebb7/images/global-navigation/header/BCF_Logo.svg'
 
 # COMMAND ----------
 

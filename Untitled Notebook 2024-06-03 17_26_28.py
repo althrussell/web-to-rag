@@ -22,7 +22,7 @@ chunk_size = 1024  # Set the chunk size for text data
 overlap = 256  # Set the overlap size for text chunks
 scrape_limit = None  # Set the limit for the number of pages to scrape, or None for no limit
 clear_table_flag = False  # Set to True to clear the table before scraping
-max_workers = 15
+max_workers = 20
 
 # COMMAND ----------
 

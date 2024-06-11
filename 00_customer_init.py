@@ -3,11 +3,11 @@
 
 # Step 1: Define parameters
 base_url = ""  # Replace with the URL you want to scrape
-sitemap_url = "" # Replace with the sitemap URL if available, otherwise use None
+# sitemap_url = "https://www.bcf.com.au/sitemap_0-product.xml" # Replace with the sitemap URL if available, otherwise use None
 
 #Unity Catalog Details
 db_catalog = "shared"  # Replace with your catalog name
-db_schema = "rio_gen_ai_demo"  # Replace with your schema name
+db_schema = "bcf_gen_ai_demo"  # Replace with your schema name
 db_table = "web_scraper_data"  # Replace with your desired table name
 
 #Vector Search Details
@@ -21,7 +21,17 @@ vs_index_fullname = f"{db_catalog}.{db_schema}.{vs_index}"
 
 # COMMAND ----------
 
-
+#DONE - sitemap_url = "https://www.bcf.com.au/sitemap_0-product.xml"
+sitemap_url = "https://www.bcf.com.au/sitemap_1-product.xml"
+#DONE - sitemap_url = "https://www.bcf.com.au/sitemap_2-product.xml"
+#NOT REQ -  sitemap_url = "https://www.bcf.com.au/sitemap_3-image.xml"
+#NOT REQ -  sitemap_url = "https://www.bcf.com.au/sitemap_4-image.xml"
+#NOT REQ -  sitemap_url = "https://www.bcf.com.au/sitemap_5-image.xml"
+#INCOMPLETE - sitemap_url = "https://www.bcf.com.au/sitemap_6-category.xml"
+#DONE - sitemap_url = "https://www.bcf.com.au/sitemap_7-content.xml"
+#DONE - sitemap_url = "https://www.bcf.com.au/sitemap_8-folder.xml"
+#DONE - sitemap_url = "https://www.bcf.com.au/sitemap_9.xml"
+#DONE - sitemap_url = "https://www.bcf.com.au/sitemap-stores.xml"
 
 # COMMAND ----------
 

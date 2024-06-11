@@ -41,6 +41,10 @@ retriever_chain = create_history_aware_retriever(chat, retriever, retriever_prom
 
 # COMMAND ----------
 
+
+
+# COMMAND ----------
+
 from operator import itemgetter
 from langchain.schema.runnable import RunnableBranch, RunnableLambda, RunnableParallel, RunnablePassthrough
 def extract_question(input):
@@ -77,3 +81,32 @@ prompt_template = ChatPromptTemplate.from_messages([
 stuff_documents_chain = create_stuff_documents_chain(chat, prompt_template)
 
 retrieval_chain = create_retrieval_chain(retriever_chain, stuff_documents_chain)
+
+# COMMAND ----------
+
+import os
+
+# COMMAND ----------
+
+# url used to send the request to your model from the serverless endpoint
+host = "https://" + spark.conf.get("spark.databricks.workspaceUrl")
+os.environ['DATABRICKS_TOKEN'] = dbutils.secrets.get("web-to-rag", "rag_sp_token")
+
+
+# COMMAND ----------
+
+
+def get_retriever(persist_dir: str = None):
+    os.environ["DATABRICKS_HOST"] = host
+    #Get the vector search index
+    vsc = VectorSearchClient(workspace_url=host, personal_access_token=os.environ["DATABRICKS_TOKEN"])
+    vs_index = vsc.get_index(
+        endpoint_name=vs_endpoint,
+        index_name=vs_index_fullname
+    )
+
+    # Create the retriever
+    vectorstore = DatabricksVectorSearch(
+        vs_index, text_column="content",columns=["url"], embedding=embedding_model
+    )
+    return vectorstore.as_retriever()
