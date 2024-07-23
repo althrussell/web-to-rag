@@ -45,6 +45,16 @@ vs_index = f"{table}_bge_index"
 vs_index_fullname = f"{catalog}.{schema}.{vs_index}"
 ```
 
+Step01: Set Corporate colours and logo
+```Change the below settings in utils/model_utils.py
+# COMMAND ----------
+
+bannerColor = '#cd2c2cff'
+chatboxColor = '#efefefff'
+
+imgurl = 'https://cdn.dataweavers.io/-/media/logo.svg'
+```
+
 # Define Questions and Roles
 ```
 user_questions = [
